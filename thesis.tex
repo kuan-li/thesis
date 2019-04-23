@@ -1,0 +1,299 @@
+\PassOptionsToPackage{svgnames,dvipsnames}{xcolor}
+
+\documentclass[12pt]{cmuthesis}
+
+\usepackage[Lenny]{fncychap}
+\ChNameVar{\Large}
+
+\input{sections/packages}
+\input{sections/macros}
+
+% \includeonly{sections/cvxpyth}
+\draftstamp{\today}{DRAFT}
+
+\begin {document}
+\frontmatter
+
+\pagestyle{empty}
+
+\title{{\bf Differentiable Optimization-Based Modeling for Machine Learning}}
+\author{Brandon Amos}
+\date{May 2019}
+\Year{2019}
+\trnumber{CMU-CS-19-X}
+
+\committee{
+\begin{tabular}{rl}
+J. Zico Kolter, Chair & \textit{Carnegie Mellon University} \\
+Barnab{\'a}s P{\'o}czos & \textit{Carnegie Mellon University} \\
+Jeff Schneider & \textit{Carnegie Mellon University} \\
+Nando de Freitas & \textit{DeepMind} \\
+Vladlen Koltun & \textit{Intel Labs} \\
+\end{tabular}
+}
+
+\support{
+  % This thesis was supported by the National Science Foundation Graduate
+  % Research Fellowship Program under Grant No.~DGE1252522.
+}
+\disclaimer{}
+
+\keywords{machine learning, statistical modeling,
+  convex optimization, deep learning, control,
+  reinforcement learning}
+
+\maketitle
+
+\begin{dedication}
+  To all of the people that light up my life. {\ensuremath\heartsuit}
+\end{dedication}
+
+\begin{abstract}
+  Domain-specific modeling priors and specialized components are
+  becoming increasingly important to the machine learning field.
+  These components integrate specialized knowledge that we have
+  as humans into model.
+  We argue in this thesis that optimization methods provide an
+  expressive set of operations that should be part of the
+  machine learning practitioner's modeling toolbox.
+
+  We present two foundational approaches for optimization-based modeling:
+  1) the \emph{OptNet} architecture that integrates
+  optimization problems as individual layers in larger end-to-end
+  trainable deep networks, and
+  2) the \emph{input-convex neural network (ICNN)}
+  architecture that helps make inference and learning in deep
+  energy-based models and structured prediction more tractable.
+
+  We then show how to use the OptNet approach
+  1) as a way of combining model-free and model-based reinforcement
+  learning with differentiable optimal control and
+  2) for top-$k$ learning problems.
+  We conclude by showing how to turn the \cvxpy domain
+  specific language into a differentiable optimization layer
+  that enables rapid prototyping of the approaches
+  in this thesis.
+\end{abstract}
+
+\begin{acknowledgments}
+  Conditional on this thesis being accepted I would like to
+  make the following incomplete and unfinished
+  set of acknowledgments. \vspace{6mm}
+
+  I have been incredibly fortunate and privileged throughout
+  my entire life to have been given many opportunities
+  that have led me to pursue this thesis research.
+  Thanks to the thousands of people in the universe throughout
+  the past few millennia who have provided me with the
+  foundation, environment, safety, health, support, service,
+  financial well-being, love, joy, knowledge, kindness, calmness,
+  and happiness to produce this work.
+
+  This thesis would not have been possible without the close
+  collaboration I have had with my advisor J.~Zico Kolter over
+  the past few years.
+  Zico's creativity and passion have profoundly shaped
+  the way I think about academic problems and pursue
+  research directions, and more broadly I have learned much
+  more from him along the way.
+  I am incredibly grateful for the immense
+  amount of time and energy Zico has put into shaping the
+  direction of this work.
+
+  Thanks to all of my close collaborators who have contributed
+  to projects appearing in this thesis, including
+  Byron Boots, Ivan Jimenez, Jacob Sacks, and Lei Xu,
+  and more recently
+  Akshay Agrawal,
+  Shane Barratt,
+  Stephen Boyd,
+  Steven Diamond,
+  and Brendan O'Donoghue.
+  Your insights and contributions have deeply
+  shaped this work.
+
+  This thesis was also made possible by the great research
+  environment that CMU has provided me during my Ph.D.~studies here.
+  CMU's collaborative, thriving, and understanding environment gave
+  me the true capabilities to pursue my passions throughout my time here.
+  I spent my first two years honing my systems skills working on
+  wearable cognitive assistance applications with
+  Mahadev (Satya) Satyanarayanan.
+  I am indebted to Satya for
+  kindly giving me the freedom to pursue my interests in
+  machine learning while part of his systems group and
+  hope that someday I will be able to pay this forward.
+  The list of all of the other students here I have learned from
+  is too long to exhaustively list out here, but includes
+  Alnur Ali,
+  Filipe de Avila Belbute-Peres,
+  Shaojie Bai,
+  Noam Brown,
+  Volkan Cirik,
+  Zhuo Chen,
+  Jeremy Cohen,
+  Travis Dick,
+  Jonathan Dinu,
+  Priya Donti,
+  Benjamin Gilbert,
+  Kiryong Ha,
+  Jan Harkes,
+  Wenlu Hu,
+  Roger Iyengar,
+  Jay-Yoon Lee,
+  Chun Kai Ling,
+  Gaurav Manek,
+  Vaishnavh Nagarajan,
+  Vittorio Perera,
+  Padmanabhan (Babu) Pillai,
+  George Philipp,
+  Leslie Rice,
+  Wolf Richter,
+  Mel Roderick,
+  Petar Stojanov,
+  Dougal Sutherland,
+  Po-Wei Wang,
+  Josh Williams,
+  Ezra Winston,
+  Junjue Wang,
+  Eric Wong,
+  Han Zhao, and
+  Xiao Zhang.
+
+  My Ph.D.~would have been severely lacking without my internships
+  at DeepMind in 2017 and Intel Labs in 2018.
+  I learned how to craft large-scale reinforcement learning systems
+  from Nando de Freitas and Misha Denil at DeepMind and
+  how to architect and approach vision problems from
+  Vladlen Koltun at Intel Labs.
+  Thank you all for hosting me.
+  I value the time that I spent as part of your groups.
+  I am grateful for all of the conversations and collaborations
+  with the other interns and researchers in the industry as well,
+  including
+  Yannis Assael,
+  Serkan Cabi,
+  Kris Cao,
+  Qifeng Chen,
+  Yutian Chen,
+  Mike Chrzanowski,
+  Sergio Gomez Colmenarejo,
+  Tim Cooijmans,
+  Soham De,
+  Laurent Dinh,
+  Vincent Dumoulin,
+  Tom Erez,
+  Michael Figurnov,
+  Jakob Foerster,
+  Yaroslav Ganin,
+  Yang Gao,
+  Caglar Gulcehre,
+  Karol Hausman,
+  Matthew W.~Hoffman,
+  Drew Jaegle,
+  David Lindell,
+  Simon Kohl,
+  Alistair Muldal,
+  Alexander Novikov,
+  Tom Le Paine,
+  Ben Poole,
+  Rene Ranftl,
+  Scott Reed,
+  German Ros,
+  Evan Shelhamer,
+  Casper Kaae Sønderby,
+  Brendan Shillingford,
+  Yuval Tassa,
+  Jonathan Uesato,
+  Ziyu Wang,
+  Abhay Yadav,
+  Xuaner Zhang, and
+  Yuke Zhu.
+
+  I am grateful to the broader machine learning research community that
+  has been thriving throughout my studies, including the
+  Caffe, PyTorch, and TensorFlow communities I have interacted
+  with over the years.
+  The conferences I've attended have been invigorating and
+  people are truly collaborative and ideas are
+  extremely composable.
+  Thanks to Soumith Chintala, Adam Paszke, and the rest of the
+  Torch/PyTorch community for helping me debug and contribute
+  back to the community.
+  Thanks also to
+  David Belanger,
+  Alex Terenin,
+  Rowan Zellers,
+  for graciously providing me with insights or
+  debugging help.
+
+  Looking back, my teachers and mentors earlier in my life
+  ignited my interests in mathematics and computer science
+  and opened my eyes.
+  My high school teachers
+  Suzanne Nicewonder,
+  Susheela Shanta, and
+  Janet Washington gave me a solid foundation
+  in engineering and mathematics.
+  Mack McGhee at Sunapsys hosted me for an
+  internship that introduced to the wonderful
+  world of Linux.
+  The collaborations during my undergrad were eye-opening.
+  Layne T.~Watson and David Easterling
+  introduced me to the beautiful fields
+  of optimization, numerical methods, and
+  high-performance computing, and taught me how to
+  write extremely optimized and robust Fortran code.
+  I apologize for going to the dark side and writing
+  ANTODL (another thesis on deep learning).
+  Jules White and Hamilton Turner taught me how
+  to hack Android internals and architect awesome Scala code.
+  Binoy Ravindran, Alastair Murray, and Rob Lyerly
+  taught me how to hack on compilers
+  and the Linux kernel.
+
+  Lastly, I would especially like to thank all of my
+  other friends, family members, and partners that
+  have provided me with an immense amount of love,
+  support, and encouragement throughout the years,
+  as well as the arts, music, yoga, meditation, cycling, dance,
+  lifting, board games, theatre, poetry,
+  and climbing communities in
+  Pittsburgh, San Francisco, and London that have
+  provided a near-infinite amount of distractions
+  from this thesis work.
+\end{acknowledgments}
+
+\pagestyle{plain}
+
+\tableofcontents
+\listoffigures
+\listoftables
+\listofalgorithms
+
+\mainmatter
+
+\include{sections/intro}
+\include{sections/background}
+
+\part{Foundations}
+\include{sections/optnet}
+\include{sections/icnn}
+
+\part{Extensions and Applications}
+\include{sections/empc}
+\include{sections/lml}
+\include{sections/cvxpyth}
+
+\part{Conclusions and Future Directions}
+\include{sections/conclusions}
+
+\printbibliography[heading=bibintoc]
+
+\end{document}
+
+%%% Local Variables:
+%%% coding: utf-8
+%%% mode: latex
+%%% TeX-engine: xetex
+%%% End:
