@@ -75,6 +75,7 @@ Vladlen Koltun & \textit{Intel Labs} \\
   in this thesis.
 \end{abstract}
 
+% \newgeometry{left=0.5in,right=0.5in,top=1in,bottom=1.4in}
 \begin{acknowledgments}
   Conditional on this thesis being accepted I would like to
   make the following incomplete and unfinished
@@ -98,64 +99,76 @@ Vladlen Koltun & \textit{Intel Labs} \\
   more from him along the way.
   I am incredibly grateful for the immense
   amount of time and energy Zico has put into shaping the
-  direction of this work.
+  direction of this work and for molding me into who I am.
 
   Thanks to all of my close collaborators who have contributed
   to projects appearing in this thesis, including
-  Byron Boots, Ivan Jimenez, Jacob Sacks, and Lei Xu,
+  Byron Boots, Ivan Jimenez, Vladlen Koltun, Jacob Sacks, and Lei Xu,
   and more recently
   Akshay Agrawal,
   Shane Barratt,
   Stephen Boyd,
   Steven Diamond,
   and Brendan O'Donoghue.
-  Your insights and contributions have deeply
-  shaped this work.
 
   This thesis was also made possible by the great research
-  environment that CMU has provided me during my Ph.D.~studies here.
+  environment that CMU has provided me during my studies here.
   CMU's collaborative, thriving, and understanding environment gave
   me the true capabilities to pursue my passions throughout my time here.
   I spent my first two years honing my systems skills working on
   wearable cognitive assistance applications with
-  Mahadev (Satya) Satyanarayanan.
-  I am indebted to Satya for
-  kindly giving me the freedom to pursue my interests in
-  machine learning while part of his systems group and
-  hope that someday I will be able to pay this forward.
-  The list of all of the other students here I have learned from
-  is too long to exhaustively list out here, but includes
+  Mahadev (Satya) Satyanarayanan and am
+  indebted to him for kindly giving me the freedom to pursue my
+  interests in machine learning while part of his systems group.
+  I hope that someday I will be able to pay this kindness forward.
+  Thanks also to all of the administrative staff that have
+  kept everything at CMU running smoothly, including
+  Deb Cavlovich and Ann Stetser.
+  I am very thankful to Gaurav Manek for a well-engineered
+  cluster setup that has made running and managing
+  experiments effortless for the rest of us.
+  And thanks to everybody else at CMU who have made graduate
+  school incredibly enjoyable and memorable, including
+  Maruan Al-Shedivat,
   Alnur Ali,
   Filipe de Avila Belbute-Peres,
   Shaojie Bai,
+  Sol Boucher,
   Noam Brown,
   Volkan Cirik,
+  Dominic Chen,
   Zhuo Chen,
+  Michael Coblenz,
   Jeremy Cohen,
-  Travis Dick,
   Jonathan Dinu,
   Priya Donti,
+  Gabriele Farina,
   Benjamin Gilbert,
   Kiryong Ha,
   Jan Harkes,
   Wenlu Hu,
   Roger Iyengar,
+  Christian Kroer,
+  Jonathan Laurent,
   Jay-Yoon Lee,
+  Lisa Lee,
   Chun Kai Ling,
-  Gaurav Manek,
+  Stefan Muller,
   Vaishnavh Nagarajan,
   Vittorio Perera,
   Padmanabhan (Babu) Pillai,
   George Philipp,
+  Aurick Qiao,
   Leslie Rice,
   Wolf Richter,
   Mel Roderick,
   Petar Stojanov,
   Dougal Sutherland,
+  Junjue Wang,
+  Phillip Wang,
   Po-Wei Wang,
   Josh Williams,
   Ezra Winston,
-  Junjue Wang,
   Eric Wong,
   Han Zhao, and
   Xiao Zhang.
@@ -164,16 +177,17 @@ Vladlen Koltun & \textit{Intel Labs} \\
   at DeepMind in 2017 and Intel Labs in 2018.
   I learned how to craft large-scale reinforcement learning systems
   from Nando de Freitas and Misha Denil at DeepMind and
-  how to architect and approach vision problems from
+  about cutting-edge vision research from
   Vladlen Koltun at Intel Labs.
   Thank you all for hosting me.
-  I value the time that I spent as part of your groups.
-  I am grateful for all of the conversations and collaborations
+  I am also grateful for all of the conversations and collaborations
   with the other interns and researchers in the industry as well,
   including
   Yannis Assael,
+  David Budden,
   Serkan Cabi,
   Kris Cao,
+  Chen Chen,
   Qifeng Chen,
   Yutian Chen,
   Mike Chrzanowski,
@@ -185,13 +199,16 @@ Vladlen Koltun & \textit{Intel Labs} \\
   Tom Erez,
   Michael Figurnov,
   Jakob Foerster,
+  Marco Fraccaro,
   Yaroslav Ganin,
+  Katelyn Gao,
   Yang Gao,
   Caglar Gulcehre,
   Karol Hausman,
   Matthew W.~Hoffman,
   Drew Jaegle,
   David Lindell,
+  Hanxiao Liu,
   Simon Kohl,
   Alistair Muldal,
   Alexander Novikov,
@@ -201,6 +218,7 @@ Vladlen Koltun & \textit{Intel Labs} \\
   Scott Reed,
   German Ros,
   Evan Shelhamer,
+  Sainbayar Sukhbaatar,
   Casper Kaae Sønderby,
   Brendan Shillingford,
   Yuval Tassa,
@@ -210,22 +228,37 @@ Vladlen Koltun & \textit{Intel Labs} \\
   Xuaner Zhang, and
   Yuke Zhu.
 
-  I am grateful to the broader machine learning research community that
-  has been thriving throughout my studies, including the
-  Caffe, PyTorch, and TensorFlow communities I have interacted
-  with over the years.
-  The conferences I've attended have been invigorating and
-  people are truly collaborative and ideas are
-  extremely composable.
-  Thanks to Soumith Chintala, Adam Paszke, and the rest of the
-  Torch/PyTorch community for helping me debug and contribute
-  back to the community.
-  Thanks also to
+  I am grateful to the broader machine learning research community
+  that has been thriving throughout my studies and has
+  supported the direction of this work.
+  This includes the Caffe, PyTorch, and TensorFlow communities
+  I have interacted with over the years.
+  These ecosystems have made the implementation and engineering
+  side of this thesis easy and enjoyable.
+  Thanks especially to Soumith Chintala, Adam Paszke, and the rest
+  of the (Py)Torch community for helping me debug many strange
+  errors and eventually contribute back.
+  And thanks to everybody in the broader machine learning community
+  who has given me deeper insights into problems or has graciously
+  helped me with their code, including
   David Belanger,
-  Alex Terenin,
-  Rowan Zellers,
-  for graciously providing me with insights or
-  debugging help.
+  Alfredo Canziani,
+  Alex Terenin, and
+  Rowan Zellers.
+
+  Thanks to all of the other communities that have provided me
+  with the tooling and infrastructure necessary that allows
+  me to work comfortably. These communities deserve more credit
+  for the impacts that they have and the immense amount of
+  development effort behind them and include the
+  emacs, git, GNU, hammerspoon, homebrew, \LaTeX, Linux, mjolnir,
+  mu4e, mutt, tmux, vim, xmonad, and zsh projects,
+  as well as the many pieces of the Python ecosystem, especially
+  Jupyter,
+  Matplotlib,
+  numpy,
+  pandas, and
+  SciPy.
 
   Looking back, my teachers and mentors earlier in my life
   ignited my interests in mathematics and computer science
@@ -238,7 +271,7 @@ Vladlen Koltun & \textit{Intel Labs} \\
   Mack McGhee at Sunapsys hosted me for an
   internship that introduced to the wonderful
   world of Linux.
-  The collaborations during my undergrad were eye-opening.
+  Moving into my undergrad,
   Layne T.~Watson and David Easterling
   introduced me to the beautiful fields
   of optimization, numerical methods, and
@@ -252,17 +285,37 @@ Vladlen Koltun & \textit{Intel Labs} \\
   taught me how to hack on compilers
   and the Linux kernel.
 
-  Lastly, I would especially like to thank all of my
+  On the personal side, I would like to thank all of my
   other friends, family members, and partners that
   have provided me with an immense amount of love,
   support, and encouragement throughout the years,
-  as well as the arts, music, yoga, meditation, cycling, dance,
-  lifting, board games, theatre, poetry,
-  and climbing communities in
-  Pittsburgh, San Francisco, and London that have
-  provided a near-infinite amount of distractions
-  from this thesis work.
+  especially Alice, Emma, and Nil-Jana.
+  Thanks to my parents Sandy and David Amos;
+  brothers Chad and Chase Amos;
+  grandparents Candyth and William Marshall Thomas
+  and Geneva Amos; and the rest of my extended family
+  for raising me in a wonderful environment and
+  encouraging me at every step along the way.
+  Thanks to my uncle Dan Dunlap for inspiring me and
+  raving about philosophy and music all of these years.
+  And thanks to everybody else I have met in the
+  arts,
+  board games,
+  climbing,
+  cycling,
+  dance,
+  lifting,
+  meditation,
+  music,
+  nature,
+  poetry,
+  theatre, and
+  yoga
+  communities in Pittsburgh, San Francisco, and London for
+  providing a near-infinite amount of distractions from
+  this thesis.
 \end{acknowledgments}
+% \restoregeometry
 
 \pagestyle{plain}
 
@@ -288,7 +341,14 @@ Vladlen Koltun & \textit{Intel Labs} \\
 \part{Conclusions and Future Directions}
 \include{sections/conclusions}
 
-\printbibliography[heading=bibintoc]
+\chapter*{Bibliography}
+\addcontentsline{toc}{chapter}{Bibliography}
+
+\vspace{-25mm}
+This bibliography has \total{citenum} references.
+\vspace{10mm}
+
+\printbibliography[heading=none]
 
 \end{document}
 
